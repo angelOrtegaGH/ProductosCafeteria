@@ -74,8 +74,12 @@ switch ($action){
         }
         break;
     case 'list':
-        if(!isset($filter) || $filter == 'null') {
-            $filter = null;
+        $filter = null;
+        if(isset($tipo) && isset($valor) ) {
+            $valor = trim($valor);
+            if ($valor != '' && $valor != 'null') {
+                $filter = ($tipo == 'id') ? "p.$tipo = '$valor'" : "p.$tipo like '%$valor%'";
+            }
         }
         $productos = Producto::getListInObjects($filter); 
         $output->status = "success";

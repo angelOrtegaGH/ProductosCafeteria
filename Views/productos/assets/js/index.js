@@ -18,22 +18,11 @@ add_or_update_productos.addEventListener('hidden.bs.modal', function (event) {
 
 $(document).ready( ()  => {
     $("#buscar").click(()=>{
-        let tipo = $("#tipo_filtro").val();
-        let valor = $("#valor").val().trim();
-        let filtro = `p.${tipo} = '${valor}'`
-
-        if (tipo != 'id') {
-            filtro = `p.${tipo} like '%${valor}%'`
-        }
-        if (valor == '') {
-            filtro = null;
-        }
-
-        cargar_productos(filtro)    
+        cargar_productos()    
 
     })
 
-    cargar_productos(null).then(()=>{
+    cargar_productos().then(()=>{
         $("#crear_producto").click(() => {
             $("#add_or_update_productos").modal("show")
         })
@@ -41,9 +30,11 @@ $(document).ready( ()  => {
     cargar_categorias()
 })
 
-async function cargar_productos(filtro) {
-    const request = await fetch(`./Controllers/producto.php?action=list&filter=${filtro}`)
-    let { status, data, message, sql } = await request.json()
+async function cargar_productos() {
+    let tipo = $("#tipo_filtro").val();
+    let valor = $("#valor").val().trim();
+    const request = await fetch(`./Controllers/producto.php?action=list&tipo=${tipo}&valor=${valor}`)
+    let { status, data, message, query } = await request.json()
     if (status != 'error') {
         let rows = "";
         if (data.length > 0) {
@@ -83,7 +74,7 @@ async function cargar_productos(filtro) {
                 if (id.trim()!='') {
                     delete_producto(id).then((status) => {
                         if(status == 'success'){
-                            cargar_productos(null)
+                            cargar_productos()
                         }
                     })
                     .catch((err) => {
@@ -111,7 +102,7 @@ async function cargar_productos(filtro) {
             $("#precio").val(producto[0].precio)
             $("#peso").val(producto[0].peso)
             $(`#categorias option`).removeAttr("selected");
-            $(`#categorias option[value='${categoria}']`).attr("selected",true);
+            $(`#categorias option[value='${categoria}']`).attr("selected","true");
             $("#stock").val(producto[0].stock)
             $("#add_or_update_productos").modal("show")
         })
@@ -130,13 +121,13 @@ async function cargar_productos(filtro) {
             $("#vender_producto").modal("show")
         })
     } else {
-        console.error(sql, message)
+        console.error(query, message)
     }
 }
 
 async function cargar_categorias() {
     const request = await fetch(`./Controllers/categoria.php?action=list`)
-    let { status, data, message, sql } = await request.json()
+    let { status, data, message, query } = await request.json()
     if (status != 'error') {
         if (data.length > 0) {
             let options = "<option value=''> Seleccionar </option>";
@@ -147,7 +138,7 @@ async function cargar_categorias() {
             $("#categorias").html(options)
         }
     } else {
-        console.error(sql, message)
+        console.error(query, message)
     }
 }
 
@@ -155,7 +146,7 @@ $("#guardar_producto").click(() => {
     add_or_update_producto('save')
     .then((status) => {
         if(status == 'success'){
-            cargar_productos(null)
+            cargar_productos()
             $("#add_or_update_productos").modal("hide")
         }
     })
@@ -169,7 +160,7 @@ $("#actualizar_producto").click(() => {
     add_or_update_producto('update')
     .then((status) => {
         if(status == 'success'){
-            cargar_productos(null)
+            cargar_productos()
             $("#add_or_update_productos").modal("hide")
         }
     })
@@ -185,7 +176,7 @@ $("#vender").click(() => {
     let cantidad = $("#cantidad").val()
     vender(id, cantidad).then((status) => {
         if(status == 'success'){
-            cargar_productos(null)
+            cargar_productos()
             $("#vender_producto").modal("hide")
         }
     })
@@ -211,9 +202,9 @@ async function add_or_update_producto(action) {
         body: datos
     })
     
-    let { status, message, sql } = await request.json()
+    let { status, message, query } = await request.json()
     if (status == 'error') {
-        console.error(sql)
+        console.error(query)
     } 
 
     alert(`${message}`)
@@ -234,9 +225,9 @@ async function vender(id, cantidad) {
             body: datos
         })
         
-        let { status, message, sql } = await request.json()
+        let { status, message, query } = await request.json()
         if (status == 'error') {
-            console.error(sql)
+            console.error(query)
         } 
     
         alert(`${message}`)
@@ -247,9 +238,9 @@ async function vender(id, cantidad) {
 
 async function delete_producto(id) {
     const request = await fetch(`./Controllers/producto.php?action=delete&id=${id}`)
-    let { status, message, sql } = await request.json()
+    let { status, message, query } = await request.json()
     if (status == 'error') {
-        console.error(sql)
+        console.error(query)
     } 
 
     alert(`${message}`)

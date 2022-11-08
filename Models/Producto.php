@@ -146,7 +146,7 @@ class Producto {
 
     public static function getList($filter){
         if ($filter!=null) $filter=" where $filter";
-        $query="select p.id, p.nombre, referencia, precio, peso, id_categoria, stock, fecha_creacion from productos p inner join categorias c on p.id_categoria = c.id $filter";
+        $query="select p.id, p.nombre, referencia, precio, peso, id_categoria, stock, fecha_creacion from productos p inner join categorias c on p.id_categoria = c.id $filter order by p.id";
         //echo $query;
         return Connector::executeQuery($query,null);
     }
