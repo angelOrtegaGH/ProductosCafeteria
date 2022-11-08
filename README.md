@@ -8,4 +8,6 @@ una vez hecho esto continuaremos con la instalción
 2. Crearemos la base de datos incluida en el script (cafeteria)
 3. Ingresaremos a la base de datos que se creó y realizaremos la creacion de las tablas y la inseción ahí almacenada
 4. Una vez hecho esto realizaremos la siguiente configuracion dentro del proyecto:
-    -En el archivo ubicado en la ruta 'DataBase/setting.ini' cambiar el usuario y la contraseña configurados en su motor de bd Mysql  
+    -En el archivo ubicado en la ruta 'DataBase/setting.ini' cambiar el usuario y la contraseña configurados en su motor de bd Mysql 
+
+!ESO ES TODO, el proyecto ya esta en marcha¡
