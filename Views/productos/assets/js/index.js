@@ -126,6 +126,7 @@ async function cargar_productos(filtro) {
             $("#vender_producto_title").html("Vender producto "+producto[0].nombre)
             $("#producto_venta").val(producto[0].id)
             $("#cantidad").val(0)
+            $("#cantidad").attr("max", producto[0].stock)
             $("#vender_producto").modal("show")
         })
     } else {
